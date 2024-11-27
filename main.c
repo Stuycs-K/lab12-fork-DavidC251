@@ -9,7 +9,7 @@
 
 
 int main(){
-    ChildProcess();
+    Processes();
 
 
 

@@ -6,46 +6,56 @@
 #include <time.h>
 #include "fork.h"
 #include <sys/wait.h>
-void ChildProcess(){
+void Processes(){
+	printf("%d about to create 2 child processes \n", getpid());
 	int RandomFile = open("/dev/random", O_RDONLY, 0);
 	unsigned int RandomNum;
 	read(RandomFile, &RandomNum, sizeof(unsigned int));
 	RandomNum = (RandomNum % 5) + 1;
-	printf("RANDOM: %d \n", RandomNum);
-	sleep(RandomNum);
+
 	pid_t ReturnVal1;
 	ReturnVal1 = fork();
 	if(ReturnVal1 > 0){
-		printf("PARENT \n");
-		int stat;
-		if(wait(&stat) == -1){
-		}
 		
-		ReturnVal1 = fork();			
+		ReturnVal1 = fork();
+			
 		
 		
 	}
-	else if(ReturnVal1 == 0){
+	if(ReturnVal1 == 0){
+		
 		read(RandomFile, &RandomNum, sizeof(unsigned int));
 		RandomNum = (RandomNum % 5) + 1;
-		printf("RANDOM: %d \n", RandomNum);
+		printf("%d %dsec \n", getpid(), RandomNum); 
 		sleep(RandomNum);
-		printf("CHILD \n");
-		exit(0);
+		printf("%d finished after %d seconds \n", getpid(), RandomNum);
+		exit(RandomNum);
+	
+		
+		
 	}
-	else{
+	else if(ReturnVal1 < 0){
 	
 		printf("%d \n", ReturnVal1);
 		printf("ERROR \n");
 	}
-	//printf("%d finished after %d seconds", , );
+	
+	int stat;
+	int waitReturn = wait(&stat);
+	if(waitReturn == -1){
+
+	}
+	else{
+		if(WIFEXITED(stat)){
+			printf("Main Process %d is done. Child %d slept for %dsec \n", getpid(), waitReturn, WEXITSTATUS(stat));
+		}
+		
+	}
+	
+	
 	
 
 
 }
 
-void ParentProcess(){
 
-
-
-}
